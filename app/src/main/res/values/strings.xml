@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Lab4FCM</string>
+    <string name="token_google">87055155291-osv7gm7anndrs4i2mh835asrs792f33b.apps.googleusercontent.com</string>
+    <string name="login_correo">Correo Eletrónico</string>
+    <string name="login_clave">Contraseña</string>
+    <string name="login_correoExample">correo@example.com</string>
+    <string name="login_claveExample">*************</string>
+    <string name="login_iniciaSesion">Iniciar Sesión</string>
+    <string name="login_mensaje_crearCuenta">Debes tener una cuenta para ingresar a la Aplicación</string>
+    <string name="login_crearCuenta">Crear una Cuenta</string>
+    <string name="login_snackbar_action">Cerrar</string>
+    <string name="mensaje_success_login">Has iniciado sesión</string>
+    <string name="mensaje_error_campoVacio">Campo vacio</string>
+    <string name="mensaje_error_camposVacios">Hay campos vacios</string>
+    <string name="mensaje_error_formatoInvalido_correo">Formato de correo invalido</string>
+    <string name="mensaje_error_longitudMinima">Contraseña muy corta</string>
+    <string name="mensaje_error_NoCoinciden_contraseña">La contraseña no coincide</string>
+    <string name="mensaje_error_conexion">No hay Conexión</string>
+    <string name="mensaje_error_contraseñaIncorrecta">Contraseña Incorrecta</string>
+    <string name="mensaje_error_usuarioInvalido">Usuario NO registrado</string>
+    <string name="mensaje_error_usuarioExistente">Usuario Ya registrado</string>
+    <string name="login_title_chat">Chat FCM</string>
+    <string name="crearCuenta_btn_crear">Crear Cuenta</string>
+    <string name="crearCuenta_txt_creacionCuenta">Creación de cuentas</string>
+    <string name="crearCuenta_txt_nombreUsuario">Nombre</string>
+    <string name="crearCuenta_txt_contraseñaRep">Confirmar Contraseña</string>
+    <string name="toolbar_cerrarSesion_option">Cerrar Sesion</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="titulo_fragment_grupos">Grupos</string>
+    <string name="titulo_fragment_usuarios">Usuarios</string>
+
 </resources>
