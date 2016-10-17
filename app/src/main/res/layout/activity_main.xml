@@ -8,10 +8,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="co.edu.udea.compumovil.gr06.lab4fcm.MainActivity">
+    tools:context="co.edu.udea.compumovil.gr06.lab4fcm.UI.MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/login_btn_iniciarCorreoYContra_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        style="@android:style/Widget.Holo.Button"
+        android:layout_centerInParent="true"
+        android:onClick="abrirDialogLogin"
+        android:text="@string/login_iniciaSesion" />
 </RelativeLayout>

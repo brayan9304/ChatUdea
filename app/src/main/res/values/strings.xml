@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Lab4FCM</string>
+    <string name="login_correo">Correo Eletronico</string>
+    <string name="login_clave">Contraseña</string>
+    <string name="login_correoExample">correo@example.com</string>
+    <string name="login_claveExample">*************</string>
+    <string name="login_iniciaSesion">Iniciar Sesión</string>
+    <string name="login_mensaje_crearCuenta">Debes tener una cuenta para ingresar a la Aplicación</string>
+    <string name="login_crearCuenta">Crear una Cuenta</string>
+    <string name="login_snackbar_action">Cerrar</string>
+    <string name="mensaje_success_login">Has iniciado sesión</string>
+    <string name="mensaje_error_campoVacio">Campo vacio</string>
+    <string name="mensaje_error_camposVacios">Hay campos vacios</string>
+    <string name="mensaje_error_formatoInvalido_correo">Formato de correo invalido</string>
+    <string name="mensaje_error_longitudMinima">Contraseña muy corta</string>
+    <string name="mensaje_error_NoCoinciden_contraseña">La contraseña no coincide</string>
+    <string name="mensaje_error_conexion">No hay Conexión</string>
+    <string name="mensaje_error_contraseñaIncorrecta">Contraseña Incorrecta</string>
+    <string name="mensaje_error_usuarioInvalido">Usuario NO registrado</string>
+
 </resources>
