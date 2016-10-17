@@ -2,21 +2,32 @@ package co.edu.udea.compumovil.gr06.lab4fcm.UI;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
 import co.edu.udea.compumovil.gr06.lab4fcm.Intefaces.conexionInterface;
@@ -31,8 +42,10 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
     private FirebaseAuth.AuthStateListener mAuthListener;
     private boolean isConnected;
     private BroadcastReceiver conexionReceiver;
+    private GoogleApiClient mgoogleAccount;
     private static final String TAG = "MainActivity";
     public static final String PASSWORD_FIREBASE_ERROR = "ERROR_WRONG_PASSWORD";
+    private static final int RC_SIGN_IN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +53,27 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
         setContentView(R.layout.activity_main);
         conexionReceiver = new NetworkChangeReceiver();
         NetworkChangeReceiver.registrarReceiver(this);
-        ConnectivityManager conexion = (ConnectivityManager) this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo infoConexion = conexion.getActiveNetworkInfo();
+        SignInButton googleBtn = (SignInButton) findViewById(R.id.login_btn_googleSignIn_id);
+        googleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
+        validarConexion();
 
-        if (infoConexion != null) {
-            isConnected = infoConexion.isConnected();
-        }
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.token_google)).requestEmail()
+                .build();
 
-        if (!isConnected) {
-            Button iniciar = (Button) findViewById(R.id.login_btn_iniciarCorreoYContra_id);
-            iniciar.setEnabled(false);
-            final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_main), R.string.mensaje_error_conexion, Snackbar.LENGTH_INDEFINITE);
-            sinConexion.setAction(R.string.login_snackbar_action, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    sinConexion.dismiss();
-                }
-            }).show();
-        }
+        mgoogleAccount = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Log.e(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -92,6 +108,42 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
         login.show(getSupportFragmentManager(), "Login");
     }
 
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mgoogleAccount);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void fireBaseAuthConGoogle(GoogleSignInAccount cuenta) {
+        AuthCredential credencial = GoogleAuthProvider.getCredential(cuenta.getIdToken(), null);
+        mAuth.signInWithCredential(credencial).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.mensaje_success_login, Toast.LENGTH_SHORT).show();
+                    login.dismiss();
+                } else {
+                    EditText clave = (EditText) findViewById(R.id.login_clave_id);
+                    Utilidad.validarConexionFirebase(task, getApplicationContext(), clave);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (data != null) {
+                GoogleSignInResult resultado = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                if (resultado.isSuccess()) {
+                    GoogleSignInAccount cuenta = resultado.getSignInAccount();
+                    fireBaseAuthConGoogle(cuenta);
+                }
+            }
+        }
+    }
+
     @Override
     public void iniciarSesion(EditText correo, final EditText clave) {
         String correoValor = correo.getText().toString();
@@ -103,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), R.string.mensaje_success_login, Toast.LENGTH_SHORT).show();
+                            Intent inicio = new Intent(getApplicationContext(), SesionActiva.class);
+                            startActivity(inicio);
                             login.dismiss();
                         } else {
                             Utilidad.validarConexionFirebase(task, getApplicationContext(), clave);
@@ -110,11 +164,26 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
                     }
                 });
             }
+        } else {
+            if (login != null && login.getView() != null) {
+                Snackbar.make(login.getView(), R.string.mensaje_error_camposVacios, Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
+    public void crearCuenta() {
+        login.dismiss();
+        Intent crear = new Intent(this, CrearCuenta.class);
+        startActivity(crear);
+    }
+
+    @Override
     public void mostrarMensajeConexion() {
+        validarConexion();
+    }
+
+    public void validarConexion() {
         ConnectivityManager conexion = (ConnectivityManager) this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo infoConexion = conexion.getActiveNetworkInfo();
 
@@ -124,9 +193,11 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
             isConnected = false;
         }
         Button iniciar = (Button) findViewById(R.id.login_btn_iniciarCorreoYContra_id);
+        SignInButton iniciarGoogle = (SignInButton) findViewById(R.id.login_btn_googleSignIn_id);
         final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_main), R.string.mensaje_error_conexion, Snackbar.LENGTH_LONG);
         if (!isConnected) {
             iniciar.setEnabled(false);
+            iniciarGoogle.setEnabled(false);
             sinConexion.setAction(R.string.login_snackbar_action, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -135,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
             }).show();
         } else {
             iniciar.setEnabled(true);
+            iniciarGoogle.setEnabled(true);
         }
     }
 }

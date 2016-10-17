@@ -9,4 +9,6 @@ import android.widget.EditText;
 public interface dialogEvent {
 
     void iniciarSesion(EditText correo, EditText clave);
+
+    void crearCuenta();
 }

@@ -60,6 +60,15 @@ public class DialogFragmentUser extends DialogFragment {
                 listener.iniciarSesion(correo, clave);
             }
         });
+
+        Button crearCuenta = (Button) vista.findViewById(R.id.login_btn_crear_cuenta_id);
+        crearCuenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.crearCuenta();
+
+            }
+        });
         return frame.create();
     }
 }
