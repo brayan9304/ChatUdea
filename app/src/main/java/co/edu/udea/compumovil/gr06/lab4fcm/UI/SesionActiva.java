@@ -19,10 +19,14 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.Adapter.ViewPageAdapater;
 import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
 import co.edu.udea.compumovil.gr06.lab4fcm.Intefaces.conexionInterface;
+import co.edu.udea.compumovil.gr06.lab4fcm.Modelo.UsuarioInfo;
 import co.edu.udea.compumovil.gr06.lab4fcm.R;
 import co.edu.udea.compumovil.gr06.lab4fcm.UI.Fragments.Grupos;
 import co.edu.udea.compumovil.gr06.lab4fcm.UI.Fragments.Usuarios;
@@ -39,13 +43,14 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     private FirebaseAuth mAuth;
     private FirebaseUser usuarioActivo;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
 
     @Override
     protected void onStart() {
         super.onStart();
         NetworkChangeReceiver.registrarReceiver(this);
         validarConexion();
-        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     @Override
@@ -87,6 +92,16 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
             }
         };
 
+        mAuth.addAuthStateListener(mAuthListener);
+        addUser();
+    }
+
+    private void addUser() {
+        myRef = FirebaseDatabase.getInstance().getReference();
+        UsuarioInfo usuarioInfo = new UsuarioInfo();
+        usuarioInfo.setNombre(mAuth.getCurrentUser().getDisplayName());
+        usuarioInfo.setEmail(mAuth.getCurrentUser().getEmail());
+        myRef.child(UsuarioInfo.CHILD).child(mAuth.getCurrentUser().getUid()).setValue(usuarioInfo);
 
     }
 

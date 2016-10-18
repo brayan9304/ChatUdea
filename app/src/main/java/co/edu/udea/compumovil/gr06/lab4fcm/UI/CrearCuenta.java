@@ -71,6 +71,7 @@ public class CrearCuenta extends AppCompatActivity implements conexionInterface 
                                         UserProfileChangeRequest cambios = new UserProfileChangeRequest.Builder()
                                                 .setDisplayName(nombreEdt.getText().toString()).build();
                                         FirebaseUser usuario = mAuth.getCurrentUser();
+
                                         if (usuario != null) {
                                             usuario.updateProfile(cambios);
                                         }
