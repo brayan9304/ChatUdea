@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         conexionReceiver = new NetworkChangeReceiver();
-        NetworkChangeReceiver.registrarReceiver(this);
         SignInButton googleBtn = (SignInButton) findViewById(R.id.login_btn_googleSignIn_id);
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +80,12 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
+                FirebaseUser usuario = firebaseAuth.getCurrentUser();
+                if (usuario != null) {
+                    Intent inicio = new Intent(getApplicationContext(), SesionActiva.class);
+                    startActivity(inicio);
+                    finish();
+                }
             }
         };
     }
@@ -121,7 +126,12 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.mensaje_success_login, Toast.LENGTH_SHORT).show();
-                    login.dismiss();
+                    Intent inicio = new Intent(getApplicationContext(), SesionActiva.class);
+                    startActivity(inicio);
+                    if (login != null && login.isVisible()) {
+                        login.dismiss();
+                    }
+                    finish();
                 } else {
                     EditText clave = (EditText) findViewById(R.id.login_clave_id);
                     Utilidad.validarConexionFirebase(task, getApplicationContext(), clave);
@@ -145,6 +155,13 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        validarConexion();
+        NetworkChangeReceiver.registrarReceiver(this);
+    }
+
+    @Override
     public void iniciarSesion(EditText correo, final EditText clave) {
         String correoValor = correo.getText().toString();
         String claveValor = clave.getText().toString();
@@ -158,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
                             Intent inicio = new Intent(getApplicationContext(), SesionActiva.class);
                             startActivity(inicio);
                             login.dismiss();
+                            finish();
                         } else {
                             Utilidad.validarConexionFirebase(task, getApplicationContext(), clave);
                         }
@@ -194,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements dialogEvent, cone
         }
         Button iniciar = (Button) findViewById(R.id.login_btn_iniciarCorreoYContra_id);
         SignInButton iniciarGoogle = (SignInButton) findViewById(R.id.login_btn_googleSignIn_id);
-        final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_main), R.string.mensaje_error_conexion, Snackbar.LENGTH_LONG);
+        final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_main), R.string.mensaje_error_conexion, Snackbar.LENGTH_INDEFINITE);
         if (!isConnected) {
             iniciar.setEnabled(false);
             iniciarGoogle.setEnabled(false);
