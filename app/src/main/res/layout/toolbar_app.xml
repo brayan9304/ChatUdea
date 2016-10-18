@@ -7,7 +7,13 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <TextView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/toolbar_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login_title_chat"
@@ -15,5 +21,16 @@
         android:textAppearance="@android:style/TextAppearance.Holo.WindowTitle"
         android:textColor="#FFF"
         android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/toolbar_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar_title"
+            android:layout_marginStart="24dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:textColor="#FFF"
+            android:text="@string/toolbar_subtitle" />
+    </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

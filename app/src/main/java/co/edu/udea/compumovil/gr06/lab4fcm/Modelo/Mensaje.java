@@ -6,19 +6,30 @@ package co.edu.udea.compumovil.gr06.lab4fcm.Modelo;
 
 public class Mensaje {
 
+    public static final int DESTINO = 0;
+    public static final int ORIGEN = 1;
+
+
     private String mensaje, usuario, fecha;
-    private String emisor;
+    private String usuarioID;
+
+    public Mensaje(String mensaje, String usuario, String fecha, String usuarioID) {
+        this.mensaje = mensaje;
+        this.usuario = usuario;
+        this.fecha = fecha;
+        this.usuarioID = usuarioID;
+    }
 
     public Mensaje() {
 
     }
 
-    public String getEmisor() {
-        return emisor;
+    public String getUsuarioID() {
+        return usuarioID;
     }
 
-    public void setEmisor(String emisor) {
-        this.emisor = emisor;
+    public void setUsuarioID(String usuarioID) {
+        this.usuarioID = usuarioID;
     }
 
     public String getMensaje() {
