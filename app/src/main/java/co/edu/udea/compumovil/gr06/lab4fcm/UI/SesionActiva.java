@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -42,7 +41,6 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     private boolean isConnected;
     private FirebaseAuth mAuth;
     private FirebaseUser usuarioActivo;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
 
     @Override
@@ -50,15 +48,11 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
         super.onStart();
         NetworkChangeReceiver.registrarReceiver(this);
         validarConexion();
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -78,19 +72,9 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
         miTabLayout.setupWithViewPager(miViewPager);
 
         mAuth = FirebaseAuth.getInstance();
+        usuarioActivo = mAuth.getCurrentUser();
+    }
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                usuarioActivo = mAuth.getCurrentUser();
-                if (usuarioActivo == null) {
-                    Intent cerrar = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(cerrar);
-                    mAuth.signOut();
-                    finish();
-                }
-            }
-        };
 
         addUser(0);
     }
