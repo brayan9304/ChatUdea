@@ -13,6 +13,15 @@ public class UsuarioInfo {
     private String nombre;
     private int estado;
     private String email;
+    private String usuarioID;
+
+    public String getUsuarioID() {
+        return usuarioID;
+    }
+
+    public void setUsuarioID(String usuarioID) {
+        this.usuarioID = usuarioID;
+    }
 
     public UsuarioInfo() {
     }

@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.Adapter.ViewPageAdapater;
 import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
@@ -52,6 +51,7 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
 
     @Override
     protected void onStop() {
+        addUser(1);
         super.onStop();
     }
 
@@ -73,8 +73,6 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
 
         mAuth = FirebaseAuth.getInstance();
         usuarioActivo = mAuth.getCurrentUser();
-    }
-
 
         addUser(0);
     }
@@ -82,11 +80,11 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     private void addUser(int estado) {
         myRef = FirebaseDatabase.getInstance().getReference();
         UsuarioInfo usuarioInfo = new UsuarioInfo();
-        usuarioInfo.setNombre(mAuth.getCurrentUser().getDisplayName());
-        usuarioInfo.setEmail(mAuth.getCurrentUser().getEmail());
+        usuarioInfo.setNombre(usuarioActivo.getDisplayName());
+        usuarioInfo.setEmail(usuarioActivo.getEmail());
         usuarioInfo.setEstado(estado);
-        myRef.child(UsuarioInfo.CHILD).child(mAuth.getCurrentUser().getUid()).setValue(usuarioInfo);
-
+        usuarioInfo.setUsuarioID(usuarioActivo.getUid());
+        myRef.child(UsuarioInfo.CHILD).child(usuarioActivo.getUid()).setValue(usuarioInfo);
     }
 
     @Override
