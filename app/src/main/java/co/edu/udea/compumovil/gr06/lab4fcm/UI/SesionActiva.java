@@ -18,10 +18,14 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.Adapter.ViewPageAdapater;
 import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
 import co.edu.udea.compumovil.gr06.lab4fcm.Intefaces.conexionInterface;
+import co.edu.udea.compumovil.gr06.lab4fcm.Modelo.UsuarioInfo;
 import co.edu.udea.compumovil.gr06.lab4fcm.R;
 import co.edu.udea.compumovil.gr06.lab4fcm.UI.Fragments.Grupos;
 import co.edu.udea.compumovil.gr06.lab4fcm.UI.Fragments.Usuarios;
@@ -37,6 +41,7 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     private boolean isConnected;
     private FirebaseAuth mAuth;
     private FirebaseUser usuarioActivo;
+    private DatabaseReference myRef;
 
     @Override
     protected void onStart() {
@@ -71,6 +76,18 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     }
 
 
+        addUser(0);
+    }
+
+    private void addUser(int estado) {
+        myRef = FirebaseDatabase.getInstance().getReference();
+        UsuarioInfo usuarioInfo = new UsuarioInfo();
+        usuarioInfo.setNombre(mAuth.getCurrentUser().getDisplayName());
+        usuarioInfo.setEmail(mAuth.getCurrentUser().getEmail());
+        usuarioInfo.setEstado(estado);
+        myRef.child(UsuarioInfo.CHILD).child(mAuth.getCurrentUser().getUid()).setValue(usuarioInfo);
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -140,6 +157,7 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
                 .setPositiveButton(R.string.sesionActiva_positiveOption_dialogo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        addUser(1);
                         Intent cerrar = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(cerrar);
                         mAuth.signOut();
