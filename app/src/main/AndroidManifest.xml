@@ -34,7 +34,8 @@
             android:name=".UI.CrearCuenta"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".UI.SesionActiva" />
-        <activity android:name=".UI.Chat"></activity>
+        <activity android:name=".UI.Chat" />
+        <activity android:name=".UI.ChatPrivate"></activity>
     </application>
 
 </manifest>
