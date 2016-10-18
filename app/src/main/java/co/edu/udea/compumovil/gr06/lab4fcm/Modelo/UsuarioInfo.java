@@ -6,15 +6,23 @@ package co.edu.udea.compumovil.gr06.lab4fcm.Modelo;
 
 public class UsuarioInfo {
 
+    public static  String CHILD = "Users";
     public static final int ESTADO_CONECTADO = 0;
     public static final int ESTADO_DESCONECTADO = 1;
 
     private String nombre;
     private int estado;
+    private String email;
 
-    public UsuarioInfo(String nombre, int estado) {
-        this.nombre = nombre;
-        this.estado = estado;
+    public UsuarioInfo() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getNombre() {

@@ -9,6 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +31,12 @@ public class Usuarios extends Fragment {
     private RecyclerView recycler;
     private RecyclerView.Adapter adaptadorRecycler;
     private RecyclerView.LayoutManager lManager;
+    private DatabaseReference myRef;
+    private List<UsuarioInfo> users;
+    private FirebaseAuth mAuth;
 
     public Usuarios() {
-        // Required empty public constructor
+
     }
 
 
@@ -33,19 +44,52 @@ public class Usuarios extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contenedor = inflater.inflate(R.layout.fragment_usuarios, container, false);
-        List<UsuarioInfo> temp = new ArrayList<>();
-        temp.add(new UsuarioInfo("jaime", UsuarioInfo.ESTADO_CONECTADO));
-        temp.add(new UsuarioInfo("Andres", UsuarioInfo.ESTADO_CONECTADO));
-        temp.add(new UsuarioInfo("laura", UsuarioInfo.ESTADO_DESCONECTADO));
 
+        myRef = FirebaseDatabase.getInstance().getReference();
+        lManager = new LinearLayoutManager(this.getContext());
         recycler = (RecyclerView) contenedor.findViewById(R.id.usuarios_recyclerView_id);
 
-        lManager = new LinearLayoutManager(this.getContext());
         recycler.setLayoutManager(lManager);
-
-        adaptadorRecycler = new adaptadorRecyclerUsuarios(temp);
-        recycler.setAdapter(adaptadorRecycler);
         return contenedor;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        users = new ArrayList<>();
+        DatabaseReference mensajeRef =  myRef.child(UsuarioInfo.CHILD);
+        mensajeRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                users.add(dataSnapshot.getValue(UsuarioInfo.class));
+                adaptadorRecycler = new adaptadorRecyclerUsuarios(users);
+                recycler.setAdapter(adaptadorRecycler);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
 }
