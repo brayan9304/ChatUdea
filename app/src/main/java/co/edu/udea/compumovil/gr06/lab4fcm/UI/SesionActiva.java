@@ -76,15 +76,15 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
     }
 
 
-        mAuth.addAuthStateListener(mAuthListener);
-        addUser();
+        addUser(0);
     }
 
-    private void addUser() {
+    private void addUser(int estado) {
         myRef = FirebaseDatabase.getInstance().getReference();
         UsuarioInfo usuarioInfo = new UsuarioInfo();
         usuarioInfo.setNombre(mAuth.getCurrentUser().getDisplayName());
         usuarioInfo.setEmail(mAuth.getCurrentUser().getEmail());
+        usuarioInfo.setEstado(estado);
         myRef.child(UsuarioInfo.CHILD).child(mAuth.getCurrentUser().getUid()).setValue(usuarioInfo);
 
     }
@@ -157,6 +157,7 @@ public class SesionActiva extends AppCompatActivity implements conexionInterface
                 .setPositiveButton(R.string.sesionActiva_positiveOption_dialogo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        addUser(1);
                         Intent cerrar = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(cerrar);
                         mAuth.signOut();
