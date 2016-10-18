@@ -2,6 +2,7 @@ package co.edu.udea.compumovil.gr06.lab4fcm;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.format.DateFormat;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -10,6 +11,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.UI.MainActivity;
 
@@ -62,6 +66,15 @@ public class Utilidad {
             return false;
         }
         return true;
+    }
+
+    public static String obtenerFechaActual(Context contextoApp) {
+        Calendar calendario = Calendar.getInstance();
+        Date fecha = calendario.getTime();
+        java.text.DateFormat fechaFormat = DateFormat.getDateFormat(contextoApp);
+        java.text.DateFormat tiempoFormat = DateFormat.getTimeFormat(contextoApp);
+        String fechanueva = fechaFormat.format(fecha) + " " + tiempoFormat.format(fecha);
+        return fechanueva;
     }
 
     public static void validarConexionFirebase(@NonNull Task<AuthResult> task, Context appContext, EditText clave) {

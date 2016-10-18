@@ -29,8 +29,17 @@
     <string name="estado_desconectado">Desconectado</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="titulo_fragment_grupos">Grupos</string>
     <string name="titulo_fragment_usuarios">Usuarios</string>
+    <string name="titulo_dialog_grupo">Grupos</string>
+    <string name="mensajes_dialog_nuevoGrupo">Ingrese un nuevo grupo</string>
+    <string name="dialog_positiveOption">Agregar</string>
+    <string name="dialog_negativeOption">Cancelar</string>
+    <string name="chat_btn_enviar">Enviar</string>
+    <string name="sesionActiva_titutlo_dialogo">Cerrar Sesión</string>
+    <string name="sesionActiva_mensaje_dialogo">Seguro que desea salir?</string>
+    <string name="sesionActiva_positiveOption_dialogo">SI</string>
+    <string name="sesionActiva_negativeOption_dialogo">NO</string>
+    <string name="toolbar_subtitle">Menu Principal</string>
 
 </resources>
