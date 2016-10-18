@@ -38,6 +38,7 @@ public class Grupos extends Fragment implements View.OnClickListener {
     private FirebaseDatabase miBD;
     private DatabaseReference root, grupos;
     private String nuevoGrupo;
+    private ValueEventListener evento;
 
     public Grupos() {
         // Required empty public constructor
@@ -61,9 +62,7 @@ public class Grupos extends Fragment implements View.OnClickListener {
         lManager = new LinearLayoutManager(this.getContext());
         recycler.setLayoutManager(lManager);
 
-        adaptadorRecycler = new AdaptadorRecyclerGrupos(gruposList);
-        recycler.setAdapter(adaptadorRecycler);
-        grupos.addValueEventListener(new ValueEventListener() {
+        evento = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator i = dataSnapshot.getChildren().iterator();
@@ -82,10 +81,26 @@ public class Grupos extends Fragment implements View.OnClickListener {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        adaptadorRecycler = new AdaptadorRecyclerGrupos(gruposList);
+        recycler.setAdapter(adaptadorRecycler);
 
 
         return contenedor;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (evento != null) {
+            grupos.removeEventListener(evento);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        grupos.addValueEventListener(evento);
     }
 
     @Override
