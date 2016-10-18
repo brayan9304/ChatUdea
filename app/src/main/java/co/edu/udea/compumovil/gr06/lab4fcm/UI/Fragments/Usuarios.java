@@ -29,11 +29,13 @@ import co.edu.udea.compumovil.gr06.lab4fcm.R;
  */
 public class Usuarios extends Fragment {
     private RecyclerView recycler;
-    private RecyclerView.Adapter adaptadorRecycler;
+    private adaptadorRecyclerUsuarios adaptadorRecycler;
     private RecyclerView.LayoutManager lManager;
     private DatabaseReference myRef;
+    private DatabaseReference usuarioRef;
     private List<UsuarioInfo> users;
     private FirebaseAuth mAuth;
+    private View contenedor;
 
     public Usuarios() {
 
@@ -43,34 +45,48 @@ public class Usuarios extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View contenedor = inflater.inflate(R.layout.fragment_usuarios, container, false);
+        contenedor = inflater.inflate(R.layout.fragment_usuarios, container, false);
 
         myRef = FirebaseDatabase.getInstance().getReference();
-        lManager = new LinearLayoutManager(this.getContext());
-        recycler = (RecyclerView) contenedor.findViewById(R.id.usuarios_recyclerView_id);
+        usuarioRef = myRef.child(UsuarioInfo.CHILD);
 
-        recycler.setLayoutManager(lManager);
         return contenedor;
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
+    public void onStart() {
+        lManager = new LinearLayoutManager(this.getContext());
+        recycler = (RecyclerView) contenedor.findViewById(R.id.usuarios_recyclerView_id);
         users = new ArrayList<>();
-        DatabaseReference mensajeRef =  myRef.child(UsuarioInfo.CHILD);
-        mensajeRef.addChildEventListener(new ChildEventListener() {
+        adaptadorRecycler = new adaptadorRecyclerUsuarios(users);
+        recycler.setLayoutManager(lManager);
+        recycler.setAdapter(adaptadorRecycler);
+        usuarioRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                users.add(dataSnapshot.getValue(UsuarioInfo.class));
-                adaptadorRecycler = new adaptadorRecyclerUsuarios(users);
-                recycler.setAdapter(adaptadorRecycler);
-
+                if (dataSnapshot.exists()) {
+                    mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser usuarioActivo = mAuth.getCurrentUser();
+                    UsuarioInfo usuarioTemp = dataSnapshot.getValue(UsuarioInfo.class);
+                    if (!usuarioTemp.getUsuarioID().equals(usuarioActivo.getUid())) {
+                        adaptadorRecycler.rellenarAdapter(usuarioTemp);
+                        recycler.scrollToPosition(adaptadorRecycler.getItemCount());
+                    }
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+                if (dataSnapshot.exists()) {
+                    mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser usuarioActivo = mAuth.getCurrentUser();
+                    UsuarioInfo usuarioTemp = dataSnapshot.getValue(UsuarioInfo.class);
+                    if (!usuarioTemp.getUsuarioID().equals(usuarioActivo.getUid())) {
+                        adaptadorRecycler.rellenarAdapter(usuarioTemp);
+                        recycler.scrollToPosition(adaptadorRecycler.getItemCount());
+                    }
+                }
             }
 
             @Override
@@ -88,8 +104,7 @@ public class Usuarios extends Fragment {
 
             }
         });
-
-
+        super.onStart();
     }
 
 }
