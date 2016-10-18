@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,8 +33,10 @@ public class Usuarios extends Fragment {
     private RecyclerView.LayoutManager lManager;
     private DatabaseReference myRef;
     private List<UsuarioInfo> users;
+    private FirebaseAuth mAuth;
+
     public Usuarios() {
-        // Required empty public constructor
+
     }
 
 
@@ -44,23 +48,24 @@ public class Usuarios extends Fragment {
         myRef = FirebaseDatabase.getInstance().getReference();
         lManager = new LinearLayoutManager(this.getContext());
         recycler = (RecyclerView) contenedor.findViewById(R.id.usuarios_recyclerView_id);
-        users = new ArrayList<>();
 
+        recycler.setLayoutManager(lManager);
         return contenedor;
     }
 
     @Override
     public void onStart(){
         super.onStart();
-
+        users = new ArrayList<>();
         DatabaseReference mensajeRef =  myRef.child(UsuarioInfo.CHILD);
         mensajeRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 users.add(dataSnapshot.getValue(UsuarioInfo.class));
-                recycler.setLayoutManager(lManager);
                 adaptadorRecycler = new adaptadorRecyclerUsuarios(users);
                 recycler.setAdapter(adaptadorRecycler);
+
             }
 
             @Override
