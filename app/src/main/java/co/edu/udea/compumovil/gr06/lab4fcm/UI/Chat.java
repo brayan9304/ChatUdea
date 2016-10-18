@@ -91,7 +91,7 @@ public class Chat extends AppCompatActivity implements conexionInterface {
                 if (dataSnapshot.exists()) {
                     Mensaje nuevoMensaje = dataSnapshot.getValue(Mensaje.class);
                     adaptadorRecycler.rellenarAdapter(nuevoMensaje);
-                    recycler.scrollToPosition(adaptadorRecycler.getItemCount() - 2);
+                    recycler.scrollToPosition(adaptadorRecycler.getItemCount() - 1);
                 }
             }
 

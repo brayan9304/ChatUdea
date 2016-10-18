@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr06.lab4fcm.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import co.edu.udea.compumovil.gr06.lab4fcm.Modelo.UsuarioInfo;
 import co.edu.udea.compumovil.gr06.lab4fcm.R;
+import co.edu.udea.compumovil.gr06.lab4fcm.UI.ChatPrivate;
 
 /**
  * Created by jaime on 17/10/2016.
@@ -36,6 +37,7 @@ public class adaptadorRecyclerUsuarios extends RecyclerView.Adapter<adaptadorRec
     @Override
     public void onBindViewHolder(holderUsuarios holder, int position) {
         holder.getUsuario().setText(usuariosRegistrados.get(position).getNombre());
+        holder.setUserID(usuariosRegistrados.get(position).getUsuarioID());
         int estado = usuariosRegistrados.get(position).getEstado();
         if (estado == UsuarioInfo.ESTADO_CONECTADO) {
             holder.getEstado().setText(holder.getContextoApp().getString(R.string.estado_conectado));
@@ -57,6 +59,11 @@ public class adaptadorRecyclerUsuarios extends RecyclerView.Adapter<adaptadorRec
         }
     }
 
+    public void rellenarAdapter(UsuarioInfo datos) {
+        usuariosRegistrados.add(datos);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
     @Override
     public int getItemCount() {
         return usuariosRegistrados.size();
@@ -67,7 +74,16 @@ public class adaptadorRecyclerUsuarios extends RecyclerView.Adapter<adaptadorRec
         private TextView usuario;
         private TextView estado;
         private ImageView imgEstado;
+        private String userID;
         private Context contextoApp;
+
+        public String getUserID() {
+            return userID;
+        }
+
+        public void setUserID(String userID) {
+            this.userID = userID;
+        }
 
         public holderUsuarios(Context contextoApp, View itemView) {
             super(itemView);
@@ -96,7 +112,11 @@ public class adaptadorRecyclerUsuarios extends RecyclerView.Adapter<adaptadorRec
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(contextoApp, "algo", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(contextoApp, getUserID(), Toast.LENGTH_SHORT).show();
+            Intent chatPrivado = new Intent(contextoApp, ChatPrivate.class);
+            chatPrivado.putExtra(ChatPrivate.CHAT_PRIVATE_USERID, getUserID());
+            chatPrivado.putExtra(ChatPrivate.CHAT_PRIVATE_USER, usuario.getText().toString());
+            contextoApp.startActivity(chatPrivado);
         }
     }
 }
