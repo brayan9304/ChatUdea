@@ -25,6 +25,8 @@
     <string name="crearCuenta_txt_nombreUsuario">Nombre</string>
     <string name="crearCuenta_txt_contraseñaRep">Confirmar Contraseña</string>
     <string name="toolbar_cerrarSesion_option">Cerrar Sesion</string>
+    <string name="estado_conectado">Conectado</string>
+    <string name="estado_desconectado">Desconectado</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

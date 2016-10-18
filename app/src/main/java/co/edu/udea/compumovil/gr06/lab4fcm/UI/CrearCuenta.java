@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import co.edu.udea.compumovil.gr06.lab4fcm.BroadCast.NetworkChangeReceiver;
 import co.edu.udea.compumovil.gr06.lab4fcm.Intefaces.conexionInterface;
 import co.edu.udea.compumovil.gr06.lab4fcm.R;
 
@@ -97,6 +98,19 @@ public class CrearCuenta extends AppCompatActivity implements conexionInterface 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        validarConexion();
+        NetworkChangeReceiver.registrarReceiver(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     public void mostrarMensajeConexion() {
         validarConexion();
     }
@@ -111,7 +125,7 @@ public class CrearCuenta extends AppCompatActivity implements conexionInterface 
             isConnected = false;
         }
         Button crear = (Button) findViewById(R.id.crearCuenta_btn_crear_id);
-        final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_crear_cuenta), R.string.mensaje_error_conexion, Snackbar.LENGTH_LONG);
+        final Snackbar sinConexion = Snackbar.make(findViewById(R.id.activity_crear_cuenta), R.string.mensaje_error_conexion, Snackbar.LENGTH_INDEFINITE);
         if (!isConnected) {
             crear.setEnabled(false);
             sinConexion.setAction(R.string.login_snackbar_action, new View.OnClickListener() {

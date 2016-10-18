@@ -1,0 +1,102 @@
+package co.edu.udea.compumovil.gr06.lab4fcm.Adapter;
+
+import android.content.Context;
+import android.os.Build;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+
+import co.edu.udea.compumovil.gr06.lab4fcm.Modelo.UsuarioInfo;
+import co.edu.udea.compumovil.gr06.lab4fcm.R;
+
+/**
+ * Created by jaime on 17/10/2016.
+ */
+
+public class adaptadorRecyclerUsuarios extends RecyclerView.Adapter<adaptadorRecyclerUsuarios.holderUsuarios> {
+    private List<UsuarioInfo> usuariosRegistrados;
+
+    public adaptadorRecyclerUsuarios(List<UsuarioInfo> usuarios) {
+        usuariosRegistrados = usuarios;
+    }
+
+    @Override
+    public holderUsuarios onCreateViewHolder(ViewGroup parent, int viewType) {
+        View vista = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.carview_usuarios, parent, false);
+        return new holderUsuarios(parent.getContext(), vista);
+    }
+
+    @Override
+    public void onBindViewHolder(holderUsuarios holder, int position) {
+        holder.getUsuario().setText(usuariosRegistrados.get(position).getNombre());
+        int estado = usuariosRegistrados.get(position).getEstado();
+        if (estado == UsuarioInfo.ESTADO_CONECTADO) {
+            holder.getEstado().setText(holder.getContextoApp().getString(R.string.estado_conectado));
+            holder.getEstado().setTextColor(holder.getContextoApp().getResources().getColor(R.color.conectado));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.getImgEstado().setImageDrawable(holder.getContextoApp().getDrawable(R.drawable.ic_estado_usuario_conexion_conectado));
+            } else {
+                holder.getImgEstado().setImageDrawable(holder.getContextoApp().getResources().getDrawable(R.drawable.ic_estado_usuario_conexion_conectado));
+            }
+        }
+        if (estado == UsuarioInfo.ESTADO_DESCONECTADO) {
+            holder.getEstado().setText(holder.getContextoApp().getString(R.string.estado_desconectado));
+            holder.getEstado().setTextColor(holder.getContextoApp().getResources().getColor(R.color.desconectado));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.getImgEstado().setImageDrawable(holder.getContextoApp().getDrawable(R.drawable.ic_estado_usuario_conexion_desconectado));
+            } else {
+                holder.getImgEstado().setImageDrawable(holder.getContextoApp().getResources().getDrawable(R.drawable.ic_estado_usuario_conexion_desconectado));
+            }
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return usuariosRegistrados.size();
+    }
+
+    public static class holderUsuarios extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private TextView usuario;
+        private TextView estado;
+        private ImageView imgEstado;
+        private Context contextoApp;
+
+        public holderUsuarios(Context contextoApp, View itemView) {
+            super(itemView);
+            usuario = (TextView) itemView.findViewById(R.id.usuarios_cardview_Nombre_id);
+            estado = (TextView) itemView.findViewById(R.id.usuarios_cardview_estado_id);
+            imgEstado = (ImageView) itemView.findViewById(R.id.usuarios_cardview_img_estado_id);
+            this.contextoApp = contextoApp;
+            itemView.setOnClickListener(this);
+        }
+
+        public TextView getUsuario() {
+            return usuario;
+        }
+
+        public TextView getEstado() {
+            return estado;
+        }
+
+        public ImageView getImgEstado() {
+            return imgEstado;
+        }
+
+        public Context getContextoApp() {
+            return contextoApp;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Toast.makeText(contextoApp, "algo", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
